@@ -4,19 +4,19 @@ namespace SelStrom.Asteroids
 {
     public class MoveSystem : BaseModelSystem<MoveComponent>
     {
-        private Model _owner;
+        private readonly GameArea _gameArea;
 
-        public void Connect(Model model)
+        public MoveSystem(GameArea gameArea)
         {
-            _owner = model;
+            _gameArea = gameArea;
         }
 
         protected override void UpdateNode(MoveComponent node, float deltaTime)
         {
             var oldPosition = node.Position.Value;
             var position = oldPosition + node.Direction * (node.Speed.Value * deltaTime);
-            Model.PlaceWithinGameArea(ref position.x, _owner.GameArea.x);
-            Model.PlaceWithinGameArea(ref position.y, _owner.GameArea.y);
+            Model.PlaceWithinGameArea(ref position.x, _gameArea.Size.x);
+            Model.PlaceWithinGameArea(ref position.y, _gameArea.Size.y);
             node.Position.Value = position;
         }
     }

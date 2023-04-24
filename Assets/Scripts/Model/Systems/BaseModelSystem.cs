@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Leopotam.EcsLite;
 
 namespace SelStrom.Asteroids
 {
@@ -9,7 +10,7 @@ namespace SelStrom.Asteroids
         public void CleanUp();
     }
 
-    public abstract class BaseModelSystem<TNode> : IModelSystem
+    public abstract class BaseModelSystem<TNode> : IModelSystem, IEcsRunSystem
     {
         private readonly Dictionary<IGameEntityModel, TNode> _entityToNode = new();
 
@@ -37,5 +38,20 @@ namespace SelStrom.Asteroids
         }
 
         protected abstract void UpdateNode(TNode node, float deltaTime);
+        
+        public void Run(IEcsSystems systems)
+        {
+            EcsWorld world = systems.GetWorld ();
+            var filter = world.Filter<Weapon> ().End ();
+        
+            // Фильтр хранит только сущности, сами даные лежат в пуле компонентов "Weapon".
+            // Пул так же может быть закеширован где-то.
+            var weapons = world.GetPool<Weapon>();
+        
+            foreach (int entity in filter) {
+                ref Weapon weapon = ref weapons.Get (entity);
+                weapon.Ammo = System.Math.Max (0, weapon.Ammo - 1);
+            }
+        }
     }
 }

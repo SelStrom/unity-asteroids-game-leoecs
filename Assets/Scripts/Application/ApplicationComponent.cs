@@ -6,7 +6,7 @@ namespace SelStrom.Asteroids
 {
     public class ApplicationComponent : MonoBehaviour, IApplicationComponent
     {
-        public event Action<float> OnUpdate;
+        public event Action OnUpdate;
         public event Action OnPause;
         public event Action OnResume;
 
@@ -30,7 +30,7 @@ namespace SelStrom.Asteroids
 
         private void Update()
         {
-            OnUpdate?.Invoke(Time.deltaTime);
+            OnUpdate?.Invoke();
         }
 
         private void OnApplicationPause(bool isPause)
